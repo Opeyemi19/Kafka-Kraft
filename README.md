@@ -3,7 +3,7 @@ Helm Chart Kafka with Kraft mode.
 
 I've created a complete Helm project for Kafka with Kraft mode (without ZooKeeper). Here is the structure of the project:
 
-``sh
+```sh
 kafka/
 ├── Chart.yaml # Chart metadata
 ├── values.yaml # Default values
