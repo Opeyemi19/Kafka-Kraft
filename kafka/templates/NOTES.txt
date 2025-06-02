@@ -1,0 +1,18 @@
+Thank you for installing {{ .Chart.Name }}!
+
+Your Kafka cluster is now running in KRaft mode with {{ .Values.replicaCount }} replicas.
+
+To interact with Kafka within the cluster:
+  - Use the headless service: {{ include "kafka.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}
+  - Port: {{ .Values.service.port }} for client connections
+  - Port: {{ .Values.service.controllerPort }} for controller connections
+
+To list Kafka topics, you can use a Kafka client pod:
+  kubectl run kafka-client --restart='Never' --image confluentinc/cp-kafka:{{ .Values.image.tag }} --namespace {{ .Release.Namespace }} --command -- sleep infinity
+  kubectl exec --tty -i kafka-client --namespace {{ .Release.Namespace }} -- kafka-topics --bootstrap-server {{ include "kafka.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}:{{ .Values.service.port }} --list
+
+For external access:
+  - Configure an Ingress, LoadBalancer, or NodePort Service
+  - Adjust KAFKA_ADVERTISED_LISTENERS accordingly
+
+Note: This deployment uses KRaft mode, which is the new consensus protocol for Kafka. Make sure your clients are compatible with this mode. 

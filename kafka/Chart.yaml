@@ -1,0 +1,16 @@
+apiVersion: v2
+name: kafka
+description: A Helm chart for deploying Apache Kafka in KRaft mode
+type: application
+version: 0.1.0
+appVersion: "7.5.0"
+maintainers:
+  - name: Opeyemi19
+keywords:
+  - kafka
+  - messaging
+  - streaming
+  - kraft
+home: https://kafka.apache.org/
+sources:
+  - https://github.com/apache/kafka

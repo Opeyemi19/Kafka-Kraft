@@ -1,0 +1,81 @@
+## Number of Kafka replicas
+replicaCount: 2
+
+## Kafka image configuration
+image:
+  repository: confluentinc/cp-kafka
+  tag: "7.5.0"
+  pullPolicy: IfNotPresent
+
+## Service configuration
+service:
+  type: ClusterIP
+  port: 9092
+  controllerPort: 29093
+  annotations: {}
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+
+## Headless service configuration
+headlessService:
+  annotations: {}
+
+## Persistence configuration
+persistence:
+  enabled: true
+  storageClass: longhorn
+  size: 30Gi
+  accessModes:
+    - ReadWriteOnce
+
+## Resource configuration
+resources:
+  limits:
+    cpu: "2"
+    memory: 4Gi
+  requests:
+    cpu: 250m
+    memory: 512Mi
+
+## Security context
+securityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+
+## Service account configuration
+serviceAccount:
+  create: true
+  name: "kafka"
+
+## Kafka configuration
+kafkaConfig:
+  CLUSTER_ID: "YourClusterIDGenerate"
+  KAFKA_PROCESS_ROLES: "broker,controller"
+  KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+  KAFKA_LISTENERS: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:29093"
+  KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://${POD_NAME}.kafka-headless.kafka.svc.cluster.local:9092"
+  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
+  KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
+  KAFKA_CONTROLLER_QUORUM_VOTERS: "0@kafka-0.kafka-headless.kafka.svc.cluster.local:29093,1@kafka-1.kafka-headless.kafka.svc.cluster.local:29093"
+  KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "2"
+  KAFKA_NUM_PARTITIONS: "2"
+  KAFKA_DEFAULT_REPLICATION_FACTOR: "2"
+  KAFKA_MIN_INSYNC_REPLICAS: "2"
+  KAFKA_LOG4J_LOGGERS: "kafka.authorizer.logger=DEBUG"
+
+## Pod configuration
+pod:
+  terminationGracePeriodSeconds: 30
+  dnsPolicy: ClusterFirst
+  schedulerName: default-scheduler
+  restartPolicy: Always
+
+## Cluster domain
+clusterDomain: cluster.local 
